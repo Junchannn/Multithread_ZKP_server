@@ -3,11 +3,11 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-# max_request_serve_at_a_time = 10
+request = int(input())
 offset = 0
 start = 0
 waiting_time_estimation = []
-for i in tqdm(range(1, 301)):
+for i in tqdm(range(1, request)):
     subprocess.run(f"./prover_client {i}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run("sleep 3",shell=True)
 

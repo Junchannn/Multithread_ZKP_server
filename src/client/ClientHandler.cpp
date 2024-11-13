@@ -10,14 +10,14 @@
 using json = nlohmann::json;
 
 ClientHandler::ClientHandler(int fd, std::chrono::time_point<std::chrono::steady_clock> start_time, std::fstream& waiting_time) : 
-        fd(fd), start_time(start_time), process_id(process_id), waiting_time(waiting_time) {}
+        fd(fd), start_time(start_time), process_id(process_id), waiting_time(waiting_time){}
 
 
 
-void ClientHandler::handleConnection() {
+void ClientHandler::handleConnection(int num_workers) {
     std::string msg = this->readMessage();
     auto wait_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - this->start_time).count();
-    this->waiting_time << wait_duration << std::endl;
+    this->waiting_time << num_workers << " " << wait_duration << std::endl;
     json pub_key = json::parse(msg);
     //recv pub_key
     ZZ g = unserialize_ZZ(pub_key["g"]);

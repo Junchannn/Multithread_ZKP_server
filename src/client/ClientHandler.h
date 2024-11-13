@@ -14,5 +14,5 @@ class ClientHandler {
         explicit ClientHandler(int fd, std::chrono::time_point<std::chrono::steady_clock> start_time, std::fstream& waiting_time);
         std::string readMessage();
         void sendMessage(const std::string& msg);
-        void handleConnection();
+        void handleConnection(int num_workers);
 };

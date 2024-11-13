@@ -69,7 +69,7 @@ void TCPClient::processFunc() {
         std::cerr << "Failed to open file waiting_time.txt" << std::endl;
         return; // Handle file open failure
     }
-    waiting_time << "Number of workers: " << this->num_workers << std::endl;
+    
     while (i < this->num_workers) {
         pid_t pid = fork();
         if (pid == 0) {
@@ -112,7 +112,7 @@ void TCPClient::processFunc() {
         // t.detach();
             // std::cout << "current pid: " << getpid() << std::endl;
             ClientHandler handler(clientfd, start_time, waiting_time);
-            handler.handleConnection();
+            handler.handleConnection(this->num_workers);
             return;
         } else if (pid < 0) {
             std::cerr << "Fork failed" << std::endl;

@@ -6,7 +6,11 @@
 #include <iostream>
 #include <pthread.h>
 #include <nlohmann/json.hpp>
-#include <sys/syscall.h>
+#include <chrono>
+#include <sys/types.h>   // For pid_t if it's not in unistd.h
+#include <cerrno>        // For error numbers
+#include <unistd.h>      // For close() and pid_t
+#include <sys/syscall.h> // For syscall() and SYS_gettid
 
 using json = nlohmann::json;
 
@@ -33,7 +37,7 @@ void ConnectionHandler::sendMessage(const std::string& msg) {
     }
 }
 void ConnectionHandler::handleConnection() {
-    pid_t tid = syscall(SYS_gettid);
+    pid_t tid = gettid();
     std::cout << "Connection handled at thread ID: " << tid << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
     

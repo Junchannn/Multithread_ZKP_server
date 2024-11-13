@@ -1,0 +1,22 @@
+services:
+  zkp_server:
+    build: 
+      context: .
+      dockerfile: src/server/Dockerfile
+    network_mode: "host"
+    extra_hosts:
+      - "archive.ubuntu.com:91.189.88.152"
+      - "security.ubuntu.com:91.189.91.38"
+    environment:
+      - NTL_VERSION=11.4.1
+
+  zkp_client:
+    build: 
+      context: .
+      dockerfile: src/client/Dockerfile
+    network_mode: "host"
+    extra_hosts:
+      - "archive.ubuntu.com:91.189.88.152"
+      - "security.ubuntu.com:91.189.91.38"
+    volumes:
+      - ./data/client_output.txt:/ZKP_client/measure/waiting_time.txt

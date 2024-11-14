@@ -18,7 +18,8 @@ RUN apt-get update && \
     python3-pip && \
     rm -rf /var/lib/apt/lists/* && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 10 && \
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 10 && \
+    mkdir -p /ZKP_client/src/client /ZKP_client/src/ZKP /ZKP_client/measure
 
 # Download, extract, and install NTL library with --no-check-certificate option
 RUN set -ex && \
@@ -33,7 +34,7 @@ RUN set -ex && \
     rm -rf /usr/src/ntl
 
 # Create directory structure
-RUN mkdir -p /ZKP_client/src/client /ZKP_client/src/ZKP /ZKP_client/measure
+RUN touch /ZKP_client/measure/waiting_time.txt
 
 # Copy project files into the container (adjusted paths)
 COPY src/client/* /ZKP_client/src/client/
@@ -42,9 +43,9 @@ COPY measure/run_sample_server.py /ZKP_client/measure/
 
 # Compile the source files into prover_client using C++20 and enable GNU extensions, linking against GMP
 RUN cd /ZKP_client && g++ -std=c++20 -D_GNU_SOURCE -I/usr/include/nlohmann -I/usr/local/include/NTL -o prover_client src/client/*.cpp src/ZKP/*.cpp -lntl -lgmp -pthread
-
+RUN pip3 install tqdm
 # Expose port for the application (if needed)
 EXPOSE 1337
 
 # Set run_sample_server.py as the main process
-ENTRYPOINT ["python3", "/ZKP_client/measure/run_sample_server.py"]
+ENTRYPOINT ["/ZKP_client/prover_client"]

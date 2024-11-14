@@ -53,18 +53,14 @@ void TCPClient::start() {
         std::cerr << "eventfd() failed, errno=" << errno << std::endl;
         return;
     }
-    // Create thread
-    // this->m_thread = std::thread([this]() { this->threadFunc(); });
 
-    // // Set name for thread
-    // pthread_setname_np(this->m_thread.native_handle(), "TCPClient");
     this->processFunc();
 }
 void TCPClient::processFunc() {
     int i = 0;
     std::fstream waiting_time;
     // Open file only once before the loop starts
-    waiting_time.open("measure/waiting_time.txt", std::ios::out | std::ios::app);  // Use append mode to avoid overwriting
+    waiting_time.open("/ZKP_client/measure/waiting_time.txt", std::ios::out | std::ios::app);  // Use append mode to avoid overwriting
     if (!waiting_time.is_open()) {
         std::cerr << "Failed to open file waiting_time.txt" << std::endl;
         return; // Handle file open failure
@@ -96,21 +92,6 @@ void TCPClient::processFunc() {
             int retry_count = 0;
             auto start_time = std::chrono::steady_clock::now();
             pid_t check = connect(clientfd, (struct sockaddr *)&clientaddr, sizeof(clientaddr));
-        // std::cout << clientfd << std::endl;
-        // std::cout << "Connected to server" << std::endl;
-        // std::thread t([this, clientfd]() {
-        //     try {
-        //         ClientHandler handler(clientfd, *this);
-        //         handler.handleConnection();
-        //     } catch (const std::exception& e) {
-        //         std::cerr << "Exception in connection handler: " << e.what() << std::endl;
-        //     } catch (...) {
-        //         std::cerr << "Unknown exception in connection handler" << std::endl;
-        //     }
-        // });
-        // pthread_setname_np(t.native_handle(), "Client child");
-        // t.detach();
-            // std::cout << "current pid: " << getpid() << std::endl;
             ClientHandler handler(clientfd, start_time, waiting_time);
             handler.handleConnection(this->num_workers);
             return;

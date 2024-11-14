@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <errno.h>
 #include <iostream>
-
+#include <unistd.h>  
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;

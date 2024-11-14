@@ -15,10 +15,9 @@ public:
     void stop(); // Stop server
     void join(); // Join server thread
 
-    std::atomic<int> connection_count{0};
-    std::mutex mtx;
-    std::condition_variable cv;
-    std::ofstream output_file;
+    // std::atomic<int> connection_count{0};
+    // std::mutex mtx;
+    // std::condition_variable cv;
 
 private:
     int efd; // Event file descriptor - used to tell server to stop

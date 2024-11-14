@@ -1,5 +1,6 @@
 #include "TCPServer.h"
 #include "ConnectionHandler.h"
+#include "../thread_pool/ThreadPool.h"
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -10,7 +11,7 @@
 #include <poll.h>
 
 const int LISTEN_QUEUE_SIZE = 50;
-const int MAX_CONNECTIONS_AT_A_TIME = 11;
+const int MAX_CONNECTIONS_AT_A_TIME = 8; //real physical thread
 
 TCPServer::TCPServer() : efd(-1), server_socket(-1) {
     this->start();
@@ -78,43 +79,44 @@ void TCPServer::join() {
 }
 
 void TCPServer::threadFunc() {
+    ThreadPool threadpool;
     std::cout << "Server started " << this->PORT << std::endl;
     auto start_time = std::chrono::steady_clock::now();
-
+    
     while (true) {
         auto now = std::chrono::steady_clock::now();
         //check if number of incoming requests is larger than serving ability of server
-        if (connection_count < MAX_CONNECTIONS_AT_A_TIME) {
-            int client_socket = accept(server_socket, nullptr, nullptr);
-            //mutex to safely modify sharing resource
-            if (client_socket >= 0) {
-                {
-                    std::lock_guard<std::mutex> lock(mtx);
-                    connection_count++;
+        // if (connection_count < MAX_CONNECTIONS_AT_A_TIME) {
+        int client_socket = accept(server_socket, nullptr, nullptr);
+        //mutex to safely modify sharing resource
+        if (client_socket >= 0) {
+            // {
+            //     std::lock_guard<std::mutex> lock(mtx);
+            //     connection_count++;
+            // }
+            // cv.notify_all();
+            
+            threadpool.enqueue([client_socket] {
+                try{
+                    ConnectionHandler handler(client_socket);
+                    handler.handleConnection();
+                } catch (const std::exception& e) {
+                    std::cerr << "Exception in connection handler: " << e.what() << std::endl;
+                } catch (...) {
+                    std::cerr << "Unknown exception in connection handler" << std::endl;
                 }
-                cv.notify_all();
-                std::thread t([this, client_socket]() {
-                    try {
-                        ConnectionHandler handler(client_socket, *this);
-                        handler.handleConnection();
-                    } catch (const std::exception& e) {
-                        std::cerr << "Exception in connection handler: " << e.what() << std::endl;
-                    } catch (...) {
-                        std::cerr << "Unknown exception in connection handler" << std::endl;
-                    }
-                });
-                t.detach();
-            } else {
-                std::cerr << "Failed to accept connection: " << strerror(errno) << std::endl;
-            }
-        } else {
-            std::unique_lock<std::mutex> lk(mtx);
-            cv.wait(lk, [this]{
-                return this->connection_count < MAX_CONNECTIONS_AT_A_TIME;
             });
+        } else {
+            std::cerr << "Failed to accept connection: " << strerror(errno) << std::endl;
+        }
+        // } else {
+        //     std::unique_lock<std::mutex> lk(mtx);
+        //     cv.wait(lk, [this]{
+        //         return this->connection_count < MAX_CONNECTIONS_AT_A_TIME;
+        //     });
             // if (wait_duration)
             //     this->output_file << wait_duration << std::endl;
-        }
+        
 
         // Check if we need to stop
         struct pollfd pfd;
@@ -124,9 +126,9 @@ void TCPServer::threadFunc() {
         if (ret > 0 && (pfd.revents & POLLIN)) {
             uint64_t u;
             read(this->efd, &u, sizeof(uint64_t));
+            
             std::cout << "Server stopping" << std::endl;
             break;
         }
     }
-    
 }

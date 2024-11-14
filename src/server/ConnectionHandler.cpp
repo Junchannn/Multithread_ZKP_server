@@ -14,7 +14,7 @@
 
 using json = nlohmann::json;
 
-ConnectionHandler::ConnectionHandler(int fd, TCPServer& server) : fd(fd), server(server) {}
+ConnectionHandler::ConnectionHandler(int fd) : fd(fd) {}
 
 
 std::string ConnectionHandler::readMessage() {
@@ -68,12 +68,12 @@ void ConnectionHandler::handleConnection() {
     else{
         this->sendMessage("Malicious");
     }
-    {
-        std::lock_guard<std::mutex> lock(this->server.mtx);
-        // Critical section where shared resources are modified
-        this->server.connection_count--;
-    }
-    this->server.cv.notify_all();
+    // {
+    //     std::lock_guard<std::mutex> lock(this->server.mtx);
+    //     // Critical section where shared resources are modified
+    //     this->server.connection_count--;
+    // }
+    // this->server.cv.notify_all();
     shutdown(this->fd, SHUT_RDWR);
     close(this->fd);
     std::cout << "Terminated thread ID: "<< tid << std::endl;

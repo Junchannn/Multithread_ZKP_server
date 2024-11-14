@@ -36,12 +36,12 @@ RUN mkdir -p /ZKP_server/src/server /ZKP_server/src/ZKP
 # Copy project files into the container
 COPY src/server/* /ZKP_server/src/server/
 COPY src/ZKP/* /ZKP_server/src/ZKP/
-
+COPY src/thread_pool/* /ZKP_server/src/thread_pool/
 # Compile the source files into verifier_server using C++20 and enable GNU extensions, linking against GMP
-RUN cd /ZKP_server && g++ -std=c++20 -D_GNU_SOURCE -I/usr/include/nlohmann -I/usr/local/include/NTL -o verifier_server src/server/*.cpp src/ZKP/*.cpp -lntl -lgmp -pthread
+RUN cd /ZKP_server && g++ -std=c++20 -D_GNU_SOURCE -I/usr/include/nlohmann -I/usr/local/include/NTL -o verifier_server src/server/*.cpp src/ZKP/*.cpp  src/thread_pool/*.cpp -lntl -lgmp -pthread
 
 # Expose port for the application
 EXPOSE 1337
 
 # Set verifier_server as the main process
-CMD ["/ZKP_server/verifier_server"]
+ENTRYPOINT ["/ZKP_server/verifier_server"]

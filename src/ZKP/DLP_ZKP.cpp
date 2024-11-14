@@ -24,7 +24,7 @@ ZZ Prover::gen_prove(ZZ e) {
 Verifier::Verifier() : g(conv<ZZ>(2)) {}
 
 void Verifier::gen_public_key() {
-    GenPrime(this->p, 1024);
+    GenPrime(this->p, 3072);
     this->order = this->p - 1;
 }
 

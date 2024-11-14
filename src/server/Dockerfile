@@ -44,4 +44,4 @@ RUN cd /ZKP_server && g++ -std=c++20 -D_GNU_SOURCE -I/usr/include/nlohmann -I/us
 EXPOSE 1337
 
 # Set verifier_server as the main process
-ENTRYPOINT ["/ZKP_server/verifier_server"]
+CMD ["/ZKP_server/verifier_server"]

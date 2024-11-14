@@ -112,7 +112,6 @@ void TCPServer::threadFunc() {
             cv.wait(lk, [this]{
                 return this->connection_count < MAX_CONNECTIONS_AT_A_TIME;
             });
-            auto wait_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - now).count();
             // if (wait_duration)
             //     this->output_file << wait_duration << std::endl;
         }

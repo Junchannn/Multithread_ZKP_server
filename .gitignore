@@ -4,3 +4,4 @@ verifier_server
 measure/backup.txt
 measure/waiting_time.txt
 .vscode/*
+token_git

@@ -16,7 +16,7 @@ ClientHandler::ClientHandler(int fd, std::chrono::time_point<std::chrono::steady
 
 void ClientHandler::handleConnection(int num_workers) {
     std::string msg = this->readMessage();
-    auto wait_duration = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - this->start_time).count();
+    auto wait_duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - this->start_time).count();
     this->waiting_time << num_workers << " " << wait_duration << std::endl;
     json pub_key = json::parse(msg);
     //recv pub_key

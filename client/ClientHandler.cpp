@@ -37,7 +37,7 @@ void ClientHandler::handleConnection(int num_workers) {
     json prove;
     prove["prove"] = serialize_ZZ(z);
     this->sendMessage(prove.dump());
-    std::cout << this->readMessage() << std::endl; //Check for output
+    // std::cout << this->readMessage() << std::endl; //Check for output
     fflush(stdout);
     shutdown(this->fd, SHUT_RDWR);
     close(this->fd);

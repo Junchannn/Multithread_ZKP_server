@@ -1,31 +1,19 @@
-version: "3.8"  # Use a more recent version of Compose
+version: '1.0'  # Use a more recent version of Compose
 
 services:
   zkp_server:
     build: 
       context: .
-      dockerfile: src/server/Dockerfile
+      dockerfile: server/Dockerfile
     ports:
       - "1337:1337"  # Expose port 1337 for external access
     environment:
-      - NTL_VERSION=11.4.1
-    networks:
-      - zk_network  # Attach to a custom network
+      NTL_VERSION: 11.4.1
 
   zkp_client:
     build: 
       context: .
-      dockerfile: src/client/Dockerfile
+      dockerfile: client/Dockerfile
     volumes:
       - ./data/client_output.txt:/ZKP_client/measure/waiting_time.txt
-    networks:
-      - zk_network  # Attach to the same custom network
-    environment:
-      - SERVER_HOST=zkp_server  # Use zkp_server as the host
-      - SERVER_PORT=1337        # The server port
-
-networks:
-  zk_network:
-    driver: bridge
-    driver_opts:
-      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+    network_mode: service:zkp_server

@@ -1,10 +1,6 @@
 import subprocess
 from tqdm import tqdm
-
-import subprocess
-from tqdm import tqdm
 import sys
-
 # Get the request count from command-line argument
 if len(sys.argv) > 1:
     request = int(sys.argv[1])

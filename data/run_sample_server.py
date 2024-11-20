@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from tqdm import tqdm
 import sys
 # Get the request count from command-line argument
@@ -10,10 +11,10 @@ else:
 
 offset = 0
 start = 0
-waiting_time_estimation = []
-for i in tqdm(range(1, request)):
-    subprocess.run(f"./prover_client {i}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+for i in tqdm(range(505, 1000)):
+    subprocess.run(f"/ZKP_client/prover_client {i}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run("sleep 3", shell=True)
+    continue
 
 
 

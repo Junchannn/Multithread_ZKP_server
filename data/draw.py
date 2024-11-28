@@ -39,7 +39,7 @@ plt.plot(
     median_points["y"].to_numpy(),
     color="red",
     marker="o",
-    label="Median waiting time Line",
+    label="Median waiting time line",
 )
 
 # Add labels, title, and legend

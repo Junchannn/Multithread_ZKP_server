@@ -11,11 +11,10 @@ else:
 
 offset = 0
 start = 0
-for i in tqdm(range(505, 1000)):
+for i in tqdm(range(1,600)):
     subprocess.run(f"/ZKP_client/prover_client {i}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subprocess.run("sleep 3", shell=True)
     continue
-
 
 
 

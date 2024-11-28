@@ -1,7 +1,6 @@
 test/*
 prover_client
 verifier_server
-measure/backup.txt
-measure/waiting_time.txt
+data/client_output.txt
 .vscode/*
 token_git

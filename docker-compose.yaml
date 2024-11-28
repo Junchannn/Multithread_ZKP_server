@@ -15,5 +15,5 @@ services:
       context: .
       dockerfile: client/Dockerfile
     volumes:
-      - ./data/client_output.txt:/ZKP_client/measure/waiting_time.txt
+      - ./data/client_output.txt:/ZKP_client/data/waiting_time.txt
     network_mode: service:zkp_server
